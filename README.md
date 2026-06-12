@@ -151,6 +151,62 @@ SplashScreen
 
 ---
 
+## 🧩 Feature-Wise Explanation
+
+### 1. Admin Authentication (`Screen/Authetication`, `Controller/authetication_controller.dart`)
+- **Login Screen**: Admin enters email/password; `AuthenticationRepository.loginApiCall` validates credentials against the backend.
+- On success, the admin session/details (`AdminLoginResponseModel`) are saved to `GetStorage` under `userData`, and the app navigates to `AdminHomePage`.
+- On subsequent launches, `main.dart` checks `GetStorage().read(userData)` to decide whether to show `AdminHomePage` or `LoginScreen` directly.
+
+### 2. Admin Home Shell (`Screen/Home/admin_home_screen.dart`)
+- Renders the responsive layout: persistent sidebar on desktop (`Responsive.isDesktop`) or a `Drawer` (`CustomSideMenubarWidget`) on smaller screens.
+- On init, calls `AdminHomeController.getAllData(context)` to bulk-load categories, courses, coaches, students, image sliders, and content data for use across all panels.
+- Uses `SideMenuController.selectedDestination` (reactive `Obx`) to swap between content panels.
+
+### 3. Sidebar Navigation (`Custom_Widget/custom_side_menubar_widget.dart`)
+Provides navigation to the following sections:
+- **Dashboard** — overview stats
+- **Category** — category & course management
+- **Coach** — coach account management
+- **Users** — student account management
+- **Image Sliders** — promotional banner management
+- **Contact Us** — contact info management
+- **About US** — about page content management
+- **Terms & Condition** — terms of use content management
+
+### 4. Category & Course Management (`Drawer_Widget/custom_course_widget.dart`)
+- Lists all categories (`GetCategoryResponseModel`) with search/filter (`_filteredData`).
+- **Add Category**: Upload category image and details (`addCategoriesApiCall`, uses `uploadImageApiCall` via `DioManager`).
+- **Update Category**: Edit existing category details (`updateCategoriesApiCall`).
+- **Enable/Disable**: Toggle category/course visibility using `flutter_advanced_switch` (`updateEnableCategoriesApiCall`).
+- **Remove Category**: Delete a category (`removeCategoriesApiCall`).
+- Course listings can be filtered by coach (`getCourseApiCall(coachId: ...)`).
+
+### 5. Coach Management (`Drawer_Widget/custom_coach_widget.dart`)
+- Lists all coaches (`GetCoachResponseModel`) via `getCoachApiCall`.
+- Enable/disable coach accounts via `updateEnableCoachApiCall`.
+
+### 6. User/Student Management (`Drawer_Widget/custom_user_widget.dart`)
+- Lists all students (`GetStudentResponseModel`) via `getStudentApiCall`.
+- Enable/disable student accounts via `updateEnableStudentApiCall`.
+
+### 7. Image Slider Management (`Drawer_Widget/custom_image_slider_widget.dart`)
+- Lists current promotional banners (`GetImageSliderResponseModel`).
+- **Add**: Upload new slider images (`addImageSliderApiCall`, with web-based image picking via `image_picker_web`/`universal_html`).
+- **Update**: Replace existing slider images (`updateImageSliderApiCall`).
+- **Delete**: Remove a slider image (`deleteImageSliderApiCall`).
+- These sliders are displayed on the **Student App** home screen.
+
+### 8. Content Management
+- **About Us** (`custom_aboutus_widget.dart`): View (`getAboutUsApiCall`) and update (`updateAboutUsApiCall`) the About Us content shown in the mobile apps.
+- **Contact Us** (`custom_contactus_widget.dart`): View (`getContactUsApiCall`) and update (`updateContactUsApiCall`) contact information.
+- **Terms of Use** (`custom_terms_of_condition_widget.dart`): View (`getTermsApiCall`) and update (`updateTermsApiCall`) terms & conditions content.
+
+### 9. Dashboard Overview (`Drawer_Widget/custom_dashboard_widget.dart`)
+- Displays summary/overview information aggregated from the data fetched by `AdminHomeController.getAllData`.
+
+---
+
 ## 👨‍💻 Notes for Developers & Contributors
 
 - **State Management**: This project relies heavily on GetX (`GetxController`, `Rx` observables, `Get.toNamed`/`Get.offAllNamed` for navigation, and `GetMaterialApp`). Familiarize yourself with GetX reactive patterns before contributing.
