@@ -1,4 +1,4 @@
-# 📚 Coach App
+# 📚 CourseHub Coach App
 
 <p align="center">
 <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/2b5f1b40-a053-4df3-9be9-3bde005f0801" />
